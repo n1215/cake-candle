@@ -1,0 +1,38 @@
+{
+    "name": "n1215/cake-candle",
+    "description": "PSR-11 compatible dependency injection plugin for CakePHP3",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "n1215",
+            "email": "knakae1215@gmail.com"
+        }
+    ],
+    "require": {
+        "cakephp/cakephp": "^3.6",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "N1215\\CakeCandle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "N1215\\CakeCandle\\": "tests"
+        }
+    },
+    "suggest": {
+        "php-di/php-di": "this plugin needs a PSR-11 container implementation."
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
+}
