@@ -1,21 +1,30 @@
 # CakeCandle
 A PSR-11 compatible dependency injection plugin for CakePHP3.
 
+# Requirements
+- CakePHP >= 3.6
+
 # Install
 
 ```
+# Create your CakePHP3 project.
+composer create-project --prefer-dist cakephp/app your_app
+
+cd your_app
+
+# Install CakeCandle.
 composer require n1215/cake-candle
 ```
 
 # Usage
 
-### Install your PSR-11 container
+### 1. Install your PSR-11 container
 You can use php-di/php-di for example.
 ```
 composer require php-di/php-di
 ```
 
-### Change your Application class
+### 2. Change your Application class
 
 ```php
 <?php
@@ -40,7 +49,7 @@ class Application extends BaseApplication
     {
         $builder = new ContainerBuilder();
         $builder->useAutowiring(true);
-        $builder->useAnnotations(true);
+        $builder->useAnnotations(false);
         return $builder->build();
     }
 
@@ -64,7 +73,20 @@ class Application extends BaseApplication
 }
 ```
 
-### Create dependency
+## 3. Change bin/cake.php
+
+```
+// ...
+
++ use N1215\CakeCandle\Console\CommandFactory;
+
+// add CommandFactory to CommandRunner constructor parameters.
+- $runner = new CommandRunner(new Application(dirname(__DIR__) . '/config'), 'cake');
++ $runner = new CommandRunner(new Application(dirname(__DIR__) . '/config'), 'cake', new CommandFactory());
+
+```
+
+### 4. Create dependency
 
 ```php
 <?php
@@ -80,7 +102,7 @@ class GreetingService
 }
 ```
 
-## Inject into Controller
+## 5. Inject into Controller
 
 ### Assisted injection (Method injection)
 Extends AppController and use N1215\CakeCandle\Http\AssistedAction trait.
@@ -112,7 +134,7 @@ class HelloController extends AppController
 ```
 
 
-## Inject into Console Command
+## 6. Inject into Console Command
 
 ### Constructor injection
 
@@ -159,7 +181,9 @@ class HelloCommand extends Command
 }
 ```
 
-## @Inject annotation
+## Additional usage
+
+### @Inject annotation
 You can use @Inject annotation with PHP-DI.
 
 Install doctrine/annotations.
