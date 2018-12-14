@@ -26,11 +26,12 @@ final class Invoker implements InvokerInterface
         $complementedArguments = [];
         foreach ($parameters as $parameter) {
             $class = $parameter->getClass();
-            if ($class !== null) {
-                $complementedArguments[] = $this->container->get($class->getName());
+            if ($class === null) {
+                $complementedArguments[] = array_shift($originalArguments);
                 continue;
             }
-            $complementedArguments[] = array_shift($originalArguments);
+
+            $complementedArguments[] = $this->container->get($class->getName());
         }
 
         return $reflectionCallable->invoke($complementedArguments);
