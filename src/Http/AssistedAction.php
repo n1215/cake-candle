@@ -2,14 +2,12 @@
 
 namespace N1215\CakeCandle\Http;
 
+use Cake\Controller\Controller;
 use Cake\Controller\Exception\MissingActionException;
 use Cake\Http\ServerRequest;
-use N1215\CakeCandle\Container\ContainerBag;
+use LogicException;
+use N1215\CakeCandle\ContainerBagLocator;
 
-/**
- * trait AssistedAction
- * @package N1215\CakeCandle\Http
- */
 trait AssistedAction
 {
     /**
@@ -18,13 +16,14 @@ trait AssistedAction
      *
      * @return mixed The resulting response.
      * @throws \ReflectionException
+     * @see Controller::invokeAction()
      */
     public function invokeAction()
     {
         /** @var ServerRequest $request */
         $request = $this->request;
         if (!$request) {
-            throw new \LogicException('No Request object configured. Cannot invoke action');
+            throw new LogicException('No Request object configured. Cannot invoke action');
         }
         if (!$this->isAction($request->getParam('action'))) {
             throw new MissingActionException([
@@ -34,10 +33,11 @@ trait AssistedAction
                 'plugin' => $request->getParam('plugin'),
             ]);
         }
+        /* @var callable $callable */
+        $callable = [$this, $request->getParam('action')];
 
-        return ContainerBag::getInstance()->invoke(
-            $this,
-            $request->getParam('action'),
+        return ContainerBagLocator::get()->call(
+            $callable,
             $request->getParam('pass')
         );
     }

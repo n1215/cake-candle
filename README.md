@@ -18,13 +18,13 @@ composer require n1215/cake-candle
 
 # Usage
 
-### 1. Install your PSR-11 container
+## 1. Install your PSR-11 container
 You can use php-di/php-di for example.
 ```
 composer require php-di/php-di
 ```
 
-### 2. Change your Application class
+## 2. Change your Application class
 
 ```php
 <?php
@@ -35,7 +35,7 @@ namespace App;
 use Cake\Http\BaseApplication;
 // ...
 use DI\ContainerBuilder;
-use N1215\CakeCandle\Container\ContainerBag;
+use N1215\CakeCandle\ContainerBagLocator;
 use N1215\CakeCandle\Http\ContainerAwareApplication;
 // ...
 
@@ -53,12 +53,12 @@ class Application extends BaseApplication
         return $builder->build();
     }
 
-    // 3. initialize ContainerBag with the configured container in Application::bootstrap().
+    // 3. initialize ContainerBagLocator with the configured container in Application::bootstrap().
     public function bootstrap()
     {
         try {
             $container = $this->configureContainer();
-            ContainerBag::init($container);
+            ContainerBagLocator::init($container);
         } catch (\Exception $e) {
             throw new \RuntimeException('Failed to configure the di container.', 0, $e);
         }
@@ -86,7 +86,7 @@ class Application extends BaseApplication
 
 ```
 
-### 4. Create dependency
+## 4. Create dependency
 
 ```php
 <?php
@@ -192,7 +192,7 @@ Install doctrine/annotations.
 composer require doctrine/annotations
 ```
 
-Enable annotaions on your container configuration.
+Enable annotations on your container configuration.
 ```php
 // in Application::configureContainer();
 $builder = new ContainerBuilder();

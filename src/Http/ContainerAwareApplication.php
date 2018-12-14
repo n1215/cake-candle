@@ -6,15 +6,12 @@ use Cake\Http\ActionDispatcher;
 use Cake\Http\BaseApplication;
 use Cake\Routing\DispatcherFactory;
 
-/**
- * Trait ContainerAwareApplication
- */
 trait ContainerAwareApplication
 {
     /**
      * Get the ActionDispatcher.
      * @return ActionDispatcher
-     * @see BaseApplication
+     * @see BaseApplication::getDispatcher()
      */
     protected function getDispatcher()
     {
