@@ -50,6 +50,11 @@ class ReflectionCallableTest extends TestCase
         ];
     }
 
+    public function test_constructor_throws_exception_when_reflection_failed()
+    {
+        $this->expectException(\ReflectionException::class);
+        new ReflectionCallable([HelloExtended::class, 'parent::staticMethod']);
+    }
 }
 
 function helloFunc($name) {
@@ -71,5 +76,13 @@ class Hello {
     public static function staticMethod($name)
     {
         return "Hello, {$name}!";
+    }
+}
+
+class HelloExtended extends Hello
+{
+    public static function staticMethod($name)
+    {
+        return "Hello, Hello, {$name}!!";
     }
 }
