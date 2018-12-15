@@ -57,15 +57,17 @@ final class ReflectionCallable
             return new ReflectionMethod($callable, '__invoke');
         }
 
-        // standard function
-        if (\is_string($callable) && \function_exists($callable)) {
-            return new ReflectionFunction($callable);
-        }
+        if (\is_string($callable)) {
+            // standard function
+            if (\function_exists($callable)) {
+                return new ReflectionFunction($callable);
+            }
 
-        // static method
-        if (\is_string($callable) && \strpos($callable, '::') !== false) {
+            // static method
             $parts = explode('::', $callable);
-            return new ReflectionMethod($parts[0], $parts[1]);
+            if (count($parts) === 2) {
+                return new ReflectionMethod($parts[0], $parts[1]);
+            }
         }
 
         throw new ReflectionException('failed to reflect the callable.');
