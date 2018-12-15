@@ -6,6 +6,7 @@ use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use N1215\CakeCandle\ContainerBagInterface;
+use Psr\Container\ContainerExceptionInterface;
 use ReflectionClass;
 
 /**
@@ -32,6 +33,7 @@ class ControllerFactory extends \Cake\Http\ControllerFactory
     public function create(ServerRequest $request, Response $response)
     {
         $className = $this->getControllerClass($request);
+
         if (!$className) {
             $this->missingController($request);
         }
@@ -41,10 +43,12 @@ class ControllerFactory extends \Cake\Http\ControllerFactory
         }
 
         /** @var Controller $controller */
-        $controller = $this->containerBag->get($className);
-        if (!empty($request->getParam('controller'))) {
-            $controller->setName($className);
+        try {
+            $controller = $this->containerBag->get($className);
+        } catch (ContainerExceptionInterface $e) {
+            throw $e;
         }
+
         $controller->setRequest($request);
         $controller->setResponse($response);
 

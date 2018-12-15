@@ -69,9 +69,8 @@ final class ReflectionCallable
                 return new ReflectionMethod($parts[0], $parts[1]);
             }
         }
-        // @codeCoverageIgnoreStart
+
         throw new ReflectionException('failed to reflect the callable.');
-        // @codeCoverageIgnoreEnd
     }
 
     /**
