@@ -11,6 +11,13 @@ use N1215\CakeCandle\ContainerBagLocator;
 trait AssistedAction
 {
     /**
+     * @param string
+     * @return bool
+     * @throws \ReflectionException
+     */
+    abstract public function isAction($action);
+
+    /**
      * Dispatches the controller action. Checks that the action
      * exists and isn't private.
      *
@@ -20,7 +27,7 @@ trait AssistedAction
      */
     public function invokeAction()
     {
-        /** @var ServerRequest $request */
+        /** @var ServerRequest|null $request */
         $request = $this->request;
         if (!$request) {
             throw new LogicException('No Request object configured. Cannot invoke action');
