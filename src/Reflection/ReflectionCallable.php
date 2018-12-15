@@ -42,7 +42,7 @@ final class ReflectionCallable
     private function createReflectionFunctionAbstract(callable $callable)
     {
         // array
-        if (is_array($callable)) {
+        if (\is_array($callable)) {
             list($class, $method) = $callable;
             return new ReflectionMethod($class, $method);
         }
@@ -53,22 +53,19 @@ final class ReflectionCallable
         }
 
         // callable object
-        if (is_object($callable) && method_exists($callable, '__invoke')) {
+        if (\is_object($callable) && \method_exists($callable, '__invoke')) {
             return new ReflectionMethod($callable, '__invoke');
         }
 
-        if (is_string($callable)) {
+        // standard function
+        if (\is_string($callable) && \function_exists($callable)) {
+            return new ReflectionFunction($callable);
+        }
 
-            // standard function
-            if (\function_exists($callable)) {
-                return new ReflectionFunction($callable);
-            }
-
-            // static method
+        // static method
+        if (\is_string($callable) && \strpos($callable, '::') !== false) {
             $parts = explode('::', $callable);
-            if (count($parts) === 2) {
-                return new ReflectionMethod($parts[0], $parts[1]);
-            }
+            return new ReflectionMethod($parts[0], $parts[1]);
         }
 
         throw new ReflectionException('failed to reflect the callable.');
