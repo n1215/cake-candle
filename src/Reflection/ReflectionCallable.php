@@ -25,7 +25,6 @@ final class ReflectionCallable
     private $reflectionFunctionAbstract;
 
     /**
-     * コンストラクタ
      * @param callable $callable
      * @throws ReflectionException
      */
