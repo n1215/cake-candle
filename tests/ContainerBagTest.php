@@ -3,7 +3,6 @@
 namespace N1215\CakeCandle;
 
 use N1215\CakeCandle\Invoker\InvokerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
