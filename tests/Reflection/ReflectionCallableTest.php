@@ -34,7 +34,7 @@ class ReflectionCallableTest extends TestCase
         $this->assertEquals('Hello, world!', $result);
     }
 
-    public function dataProvider_callables(): array
+    public function dataProvider_callables()
     {
         return [
             ['\N1215\CakeCandle\Reflection\helloFunc'],
