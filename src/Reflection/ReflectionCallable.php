@@ -86,6 +86,6 @@ final class ReflectionCallable
     public function invoke(array $args = [])
     {
         $callable = $this->callable;
-        return $callable(...$args);
+        return call_user_func_array($callable, $args);
     }
 }
