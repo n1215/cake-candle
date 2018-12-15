@@ -6,12 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class ContainerBagLocatorTest extends TestCase
 {
-    public function test_get_throws_exception_when_called_before_init()
+    public function setUp()
     {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('ContainerBagLocator has not been initialized.');
-
-        ContainerBagLocator::get();
+        parent::setUp();
+        ContainerBagLocator::flush();
     }
 
     public function test_init_and_get()
@@ -33,5 +31,24 @@ class ContainerBagLocatorTest extends TestCase
         $secondBag = ContainerBagLocator::get();
 
         $this->assertSame($bag, $secondBag);
+    }
+
+    public function test_get_throws_exception_when_called_before_init()
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('ContainerBagLocator has not been initialized.');
+
+        ContainerBagLocator::get();
+    }
+
+    public function test_init_throws_exception_when_called_twice()
+    {
+        $container = new MockContainer([]);
+        ContainerBagLocator::init($container);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('ContainerBagLocator has already been initialized.');
+
+        ContainerBagLocator::init($container);
     }
 }

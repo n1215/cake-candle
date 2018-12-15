@@ -45,6 +45,7 @@ final class ContainerBag implements ContainerBagInterface
      * @param callable $callable
      * @param array $args
      * @return mixed
+     * @throws Invoker\Exceptions\InvocationException
      * @throws \ReflectionException
      */
     public function call(callable $callable, array $args = [])

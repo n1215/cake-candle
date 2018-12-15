@@ -19,6 +19,7 @@ class CommandFactoryTest extends TestCase
     {
         parent::setUp();
         $this->container = $this->createMock(ContainerInterface::class);
+        ContainerBagLocator::flush();
         ContainerBagLocator::init($this->container);
     }
 

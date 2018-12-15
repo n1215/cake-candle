@@ -5,7 +5,7 @@ namespace N1215\CakeCandle\Http;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use N1215\CakeCandle\ContainerBagLocator;
+use N1215\CakeCandle\ContainerBagInterface;
 use ReflectionClass;
 
 /**
@@ -13,6 +13,19 @@ use ReflectionClass;
  */
 class ControllerFactory extends \Cake\Http\ControllerFactory
 {
+    /**
+     * @var ContainerBagInterface
+     */
+    private $containerBag;
+
+    /**
+     * @param ContainerBagInterface $containerBag
+     */
+    public function __construct(ContainerBagInterface $containerBag)
+    {
+        $this->containerBag = $containerBag;
+    }
+
     /**
      * @inheritdoc
      */
@@ -28,7 +41,7 @@ class ControllerFactory extends \Cake\Http\ControllerFactory
         }
 
         /** @var Controller $controller */
-        $controller = ContainerBagLocator::get()->get($className);
+        $controller = $this->containerBag->get($className);
         if (!empty($request->getParam('controller'))) {
             $controller->setName($className);
         }

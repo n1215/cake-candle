@@ -17,6 +17,10 @@ final class ContainerBagLocator
      */
     public static function init(ContainerInterface $container)
     {
+        if (self::$bag !== null) {
+            throw new \LogicException('ContainerBagLocator has already been initialized.');
+        }
+
         self::$bag = new ContainerBag($container, new Invoker($container));
     }
 
@@ -30,5 +34,10 @@ final class ContainerBagLocator
         }
 
         return self::$bag;
+    }
+
+    public static function flush()
+    {
+        self::$bag = null;
     }
 }

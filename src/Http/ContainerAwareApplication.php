@@ -6,6 +6,7 @@ use Cake\Event\EventManager;
 use Cake\Http\ActionDispatcher;
 use Cake\Http\BaseApplication;
 use Cake\Routing\DispatcherFactory;
+use N1215\CakeCandle\ContainerBagLocator;
 
 trait ContainerAwareApplication
 {
@@ -22,7 +23,7 @@ trait ContainerAwareApplication
      */
     protected function getDispatcher()
     {
-        $controllerFactory = new ControllerFactory();
+        $controllerFactory = new ControllerFactory(ContainerBagLocator::get());
         return new ActionDispatcher($controllerFactory, $this->getEventManager(), DispatcherFactory::filters());
     }
 }
