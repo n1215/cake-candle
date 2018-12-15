@@ -1,6 +1,12 @@
 # CakeCandle
 A PSR-11 compatible dependency injection plugin for CakePHP3.
 
+[![Latest Stable Version](https://poser.pugx.org/n1215/cake-candle/v/stable)](https://packagist.org/packages/n1215/cake-candle)
+[![License](https://poser.pugx.org/n1215/cake-candle/license)](https://packagist.org/packages/n1215/cake-candle)
+[![Build Status](https://scrutinizer-ci.com/g/n1215/cake-candle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/n1215/cake-candle/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/n1215/cake-candle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/n1215/cake-candle/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/n1215/cake-candle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/n1215/cake-candle/?branch=master)
+
 # Requirements
 - CakePHP >= 3.6
 
