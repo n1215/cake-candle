@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace N1215\CakeCandle\Controller;
 
+use Cake\Controller\Exception\MissingActionException;
 use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Exception\MissingControllerException;
 use N1215\CakeCandle\ContainerBag;
+use N1215\CakeCandle\Controller\Controller\MockDependency;
 use N1215\CakeCandle\Controller\Controller\MockHelloController;
 use N1215\CakeCandle\Invoker\Invoker;
 use N1215\CakeCandle\MockContainer;
@@ -40,7 +43,7 @@ class ControllerFactoryTest extends TestCase
         $this->controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/hello/taro',]);
         $request = (new ServerRequest([]))
@@ -54,7 +57,7 @@ class ControllerFactoryTest extends TestCase
         $this->assertSame('MockHello', $result->getName());
     }
 
-    public function test_create_throws_exception_when_cannot_resolve_controller_name()
+    public function test_create_throws_exception_when_cannot_resolve_controller_name(): void
     {
         $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/goodby/taro',]);
         $request = (new ServerRequest([]))
@@ -66,7 +69,7 @@ class ControllerFactoryTest extends TestCase
         $this->controllerFactory->create($request);
     }
 
-    public function test_create_throws_exception_when_resolved_controller_is_abstract()
+    public function test_create_throws_exception_when_resolved_controller_is_abstract(): void
     {
         $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/abstract/taro',]);
         $request = (new ServerRequest([]))
@@ -78,7 +81,7 @@ class ControllerFactoryTest extends TestCase
         $this->controllerFactory->create($request);
     }
 
-    public function test_create_throws_exception_when_cannot_resolve_controller_object()
+    public function test_create_throws_exception_when_cannot_resolve_controller_object(): void
     {
         $container = new MockContainer([]);
         $controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
@@ -91,6 +94,92 @@ class ControllerFactoryTest extends TestCase
         $this->expectException(NotFoundExceptionInterface::class);
 
         $controllerFactory->create($request);
+    }
+
+
+    public function test_invoke(): void
+    {
+        $container = new MockContainer([
+            MockDependency::class => function () { return new MockDependency(); },
+        ]);
+        $controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
+
+        $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/hello/taro',]);
+        $request = (new ServerRequest([]))
+            ->withUri($uri)
+            ->withParam('controller', 'MockHello')
+            ->withParam('action', 'hello')
+            ->withParam('pass', ['taro']);
+        $response = new Response();
+        $controller = new MockHelloController($request, $response);
+
+        $result = $controllerFactory->invoke($controller);
+        $this->assertSame($response, $result);
+    }
+
+    public function test_invoke_and_return_startup_response(): void
+    {
+        $container = new MockContainer([
+            MockDependency::class => function () { return new MockDependency(); },
+        ]);
+        $controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
+
+        $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/hello/taro',]);
+        $request = (new ServerRequest([]))
+            ->withUri($uri)
+            ->withParam('controller', 'MockHello')
+            ->withParam('action', 'hello')
+            ->withParam('pass', ['taro']);
+        $response = new Response();
+        $startupResponse = new Response();
+        $controller = new MockHelloController($request, $response);
+        $controller->startupResponse = $startupResponse;
+
+        $result = $controllerFactory->invoke($controller);
+
+        $this->assertSame($startupResponse, $result);
+    }
+
+    public function test_invoke_and_return_shutdown_response(): void
+    {
+        $container = new MockContainer([
+            MockDependency::class => function () { return new MockDependency(); },
+        ]);
+        $controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
+
+        $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/hello/taro',]);
+        $request = (new ServerRequest([]))
+            ->withUri($uri)
+            ->withParam('controller', 'MockHello')
+            ->withParam('action', 'hello')
+            ->withParam('pass', ['taro']);
+        $response = new Response();
+        $shutdownResponse = new Response();
+        $controller = new MockHelloController($request, $response);
+        $controller->shutdownResponse = $shutdownResponse;
+
+        $result = $controllerFactory->invoke($controller);
+
+        $this->assertSame($shutdownResponse, $result);
+    }
+
+    public function test_invoke_throws_exception_when_action_not_found(): void
+    {
+        $container = new MockContainer([
+            MockDependency::class => function () { return new MockDependency(); },
+        ]);
+        $controllerFactory = new ControllerFactory(new ContainerBag($container, new Invoker($container)));
+
+        $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/hello/taro',]);
+        $request = (new ServerRequest([]))
+            ->withUri($uri)
+            ->withParam('controller', 'MockHello')
+            ->withParam('action', 'goodbye')
+            ->withParam('pass', ['taro']);
+        $response = new Response();
+        $controller = new MockHelloController($request, $response);
+        $this->expectException(MissingActionException::class);
+        $controllerFactory->invoke($controller);
     }
 }
 

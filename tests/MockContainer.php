@@ -23,12 +23,12 @@ class MockContainer implements ContainerInterface
         return $factory();
     }
 
-    public function createNotFoundMessage($id)
+    public function createNotFoundMessage($id): string
     {
         return "entry {$id} not found";
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return array_key_exists($id, $this->factories);
     }

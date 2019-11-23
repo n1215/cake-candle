@@ -82,6 +82,24 @@ class ContainerBagTest extends TestCase
 
         $this->assertEquals('Hello, World!', $result);
     }
+
+    public function test_complement()
+    {
+        $hello = new Hello();
+        $callable = function ($name, Hello $hello) {
+            return $hello->to($name);
+        };
+        $args = ['World'];
+
+        $this->invoker->expects($this->once())
+            ->method('complement')
+            ->with($callable, $args)
+            ->willReturn(['World', $hello]);
+
+        $result = $this->containerBag->complement($callable, $args);
+
+        $this->assertEquals(['World', $hello], $result);
+    }
 }
 
 class Hello

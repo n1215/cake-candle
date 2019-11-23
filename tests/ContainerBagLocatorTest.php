@@ -14,7 +14,7 @@ class ContainerBagLocatorTest extends TestCase
         ContainerBagLocator::flush();
     }
 
-    public function test_init_and_get()
+    public function test_init_and_get(): void
     {
         $container = new MockContainer([]);
 
@@ -24,7 +24,7 @@ class ContainerBagLocatorTest extends TestCase
         $this->assertInstanceOf(ContainerBagInterface::class, $bag);
     }
 
-    public function test_get_always_returns_same_object()
+    public function test_get_always_returns_same_object(): void
     {
         $container = new MockContainer([]);
         ContainerBagLocator::init($container);
@@ -35,7 +35,7 @@ class ContainerBagLocatorTest extends TestCase
         $this->assertSame($bag, $secondBag);
     }
 
-    public function test_get_throws_exception_when_called_before_init()
+    public function test_get_throws_exception_when_called_before_init(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('ContainerBagLocator has not been initialized.');
@@ -43,7 +43,7 @@ class ContainerBagLocatorTest extends TestCase
         ContainerBagLocator::get();
     }
 
-    public function test_init_throws_exception_when_called_twice()
+    public function test_init_throws_exception_when_called_twice(): void
     {
         $container = new MockContainer([]);
         ContainerBagLocator::init($container);

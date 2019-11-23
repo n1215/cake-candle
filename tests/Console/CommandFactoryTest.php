@@ -28,7 +28,7 @@ class CommandFactoryTest extends TestCase
      * @param string $className
      * @dataProvider dataProvider_create
      */
-    public function test_create($className)
+    public function test_create($className): void
     {
         $commandFactory = new CommandFactory();
 
@@ -42,7 +42,7 @@ class CommandFactoryTest extends TestCase
         $this->assertInstanceOf($className, $result);
     }
 
-    public function dataProvider_create()
+    public function dataProvider_create(): array
     {
         return [
             [HelloCommand::class],
@@ -53,7 +53,7 @@ class CommandFactoryTest extends TestCase
     /**
      * @dataProvider dataProvider_create
      */
-    public function test_create_throws_exception_when_non_command_class_given()
+    public function test_create_throws_exception_when_non_command_class_given(): void
     {
         $className = Hello::class;
         $commandFactory = new CommandFactory();
