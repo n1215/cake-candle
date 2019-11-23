@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle\Reflection;
 
+use Closure;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -42,23 +44,23 @@ final class ReflectionCallable
     private function createReflectionFunctionAbstract(callable $callable)
     {
         // array
-        if (\is_array($callable)) {
+        if (is_array($callable)) {
             list($class, $method) = $callable;
             return new ReflectionMethod($class, $method);
         }
 
         // closure
-        if ($callable instanceof \Closure) {
+        if ($callable instanceof Closure) {
             return new ReflectionFunction($callable);
         }
 
         // callable object
-        if (\is_object($callable) && \method_exists($callable, '__invoke')) {
+        if (is_object($callable) && method_exists($callable, '__invoke')) {
             return new ReflectionMethod($callable, '__invoke');
         }
 
         // standard function
-        if (\function_exists($callable)) {
+        if (function_exists($callable)) {
             return new ReflectionFunction($callable);
         }
 
@@ -81,7 +83,6 @@ final class ReflectionCallable
      */
     public function invoke(array $args = [])
     {
-        $callable = $this->callable;
-        return call_user_func_array($callable, $args);
+        return ($this->callable)(...$args);
     }
 }

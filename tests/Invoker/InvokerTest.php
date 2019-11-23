@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle\Invoker;
 
 use N1215\CakeCandle\Invoker\Exceptions\InsufficientArgumentsException;
+use N1215\CakeCandle\Invoker\Exceptions\ReflectionFailedException;
 use N1215\CakeCandle\MockContainer;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
@@ -14,7 +16,7 @@ class InvokerTest extends TestCase
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->container = new MockContainer([
@@ -67,7 +69,7 @@ class InvokerTest extends TestCase
         $invoker = new Invoker($this->container);
         $callable = [SagaExtended::class, 'parent::hello'];
 
-        $this->expectException(\ReflectionException::class);
+        $this->expectException(ReflectionFailedException::class);
 
         $invoker->invoke($callable, ['World']);
     }

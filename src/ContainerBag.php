@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle;
 
@@ -36,7 +37,7 @@ final class ContainerBag implements ContainerBagInterface
      * @param string $id
      * @return bool
      */
-    public function has($id)
+    public function has($id): bool
     {
         return $this->container->has($id);
     }
@@ -46,10 +47,20 @@ final class ContainerBag implements ContainerBagInterface
      * @param array $args
      * @return mixed
      * @throws Invoker\Exceptions\InvocationException
-     * @throws \ReflectionException
      */
     public function call(callable $callable, array $args = [])
     {
         return $this->invoker->invoke($callable, $args);
+    }
+
+    /**
+     * @param callable $callable
+     * @param array $args
+     * @return array
+     * @throws Invoker\Exceptions\InvocationException
+     */
+    public function complement(callable $callable, array $args = []): array
+    {
+        return $this->invoker->complement($callable, $args);
     }
 }

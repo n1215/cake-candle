@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace N1215\CakeCandle\Invoker\Exceptions;
 
-use Exception;
-
 /**
- * Failed to invoke a callable
+ * Unable to get reflection
  * @package N1215\CakeCandle\Invoker\Exceptions
  */
-class InvocationException extends Exception
+class ReflectionFailedException extends InvocationException
 {
 }

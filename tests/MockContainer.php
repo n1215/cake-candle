@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle;
 
@@ -31,5 +32,4 @@ class MockContainer implements ContainerInterface
     {
         return array_key_exists($id, $this->factories);
     }
-
 }

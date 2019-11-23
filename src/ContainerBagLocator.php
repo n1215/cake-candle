@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle;
 
@@ -15,7 +16,7 @@ final class ContainerBagLocator
     /**
      * @param ContainerInterface $container
      */
-    public static function init(ContainerInterface $container)
+    public static function init(ContainerInterface $container): void
     {
         if (self::$bag !== null) {
             throw new \LogicException('ContainerBagLocator has already been initialized.');
@@ -27,7 +28,7 @@ final class ContainerBagLocator
     /**
      * @return ContainerBagInterface
      */
-    public static function get()
+    public static function get(): ContainerBagInterface
     {
         if (self::$bag === null) {
             throw new \LogicException('ContainerBagLocator has not been initialized.');
@@ -36,7 +37,7 @@ final class ContainerBagLocator
         return self::$bag;
     }
 
-    public static function flush()
+    public static function flush(): void
     {
         self::$bag = null;
     }

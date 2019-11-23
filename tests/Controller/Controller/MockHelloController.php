@@ -1,14 +1,12 @@
 <?php
+declare(strict_types=1);
 
-namespace N1215\CakeCandle\Http\Controller;
+namespace N1215\CakeCandle\Controller\Controller;
 
 use Cake\Controller\Controller;
-use N1215\CakeCandle\Http\AssistedAction;
 
 class MockHelloController extends Controller
 {
-    use AssistedAction;
-
     public function hello($name, MockDependency $dependency)
     {
         return $this->response;

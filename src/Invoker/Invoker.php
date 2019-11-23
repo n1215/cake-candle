@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle\Invoker;
 
 use N1215\CakeCandle\Invoker\Exceptions\InsufficientArgumentsException;
+use N1215\CakeCandle\Invoker\Exceptions\ReflectionFailedException;
 use N1215\CakeCandle\Reflection\ReflectionCallable;
 use Psr\Container\ContainerInterface;
+use ReflectionException;
 
 final class Invoker implements InvokerInterface
 {
@@ -26,8 +29,22 @@ final class Invoker implements InvokerInterface
      */
     public function invoke(callable $callable, array $args = [])
     {
+        $complementedArguments = $this->complement($callable, $args);
+        return $callable(...$complementedArguments);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function complement(callable $callable, array $args = []): array
+    {
         $originalArguments = array_values($args);
-        $reflectionCallable = new ReflectionCallable($callable);
+        try {
+            $reflectionCallable = new ReflectionCallable($callable);
+        } catch (ReflectionException $e) {
+            throw new ReflectionFailedException('failed to get reflection of the callable', 0, $e);
+        }
+
         $parameters = $reflectionCallable->getParameters();
 
         $complementedArguments = [];
@@ -49,6 +66,6 @@ final class Invoker implements InvokerInterface
             $complementedArguments[] = array_shift($originalArguments);
         }
 
-        return $reflectionCallable->invoke($complementedArguments);
+        return $complementedArguments;
     }
 }

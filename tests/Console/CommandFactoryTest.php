@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle\Console;
 
@@ -15,7 +16,7 @@ class CommandFactoryTest extends TestCase
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->container = $this->createMock(ContainerInterface::class);

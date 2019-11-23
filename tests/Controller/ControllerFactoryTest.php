@@ -1,14 +1,14 @@
 <?php
+declare(strict_types=1);
 
-namespace N1215\CakeCandle\Http;
+namespace N1215\CakeCandle\Controller;
 
 use Cake\Core\Configure;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\Routing\Exception\MissingControllerException;
+use Cake\Http\Exception\MissingControllerException;
 use N1215\CakeCandle\ContainerBag;
-use N1215\CakeCandle\Http\Controller\MockHelloController;
+use N1215\CakeCandle\Controller\Controller\MockHelloController;
 use N1215\CakeCandle\Invoker\Invoker;
 use N1215\CakeCandle\MockContainer;
 use PHPUnit\Framework\TestCase;
@@ -26,11 +26,11 @@ class ControllerFactoryTest extends TestCase
      */
     private $controllerFactory;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        Configure::write('App.namespace', 'N1215\CakeCandle\Http');
+        Configure::write('App.namespace', 'N1215\CakeCandle\Controller');
         $this->helloController = new MockHelloController();
         $container = new MockContainer([
             MockHelloController::class => function () {
@@ -46,13 +46,11 @@ class ControllerFactoryTest extends TestCase
         $request = (new ServerRequest([]))
             ->withUri($uri)
             ->withParam('controller', 'MockHello');
-        $response = new Response();
 
-        $result = $this->controllerFactory->create($request, $response);
+        $result = $this->controllerFactory->create($request);
 
         $this->assertSame($this->helloController, $result);
         $this->assertSame($request, $result->getRequest());
-        $this->assertSame($response, $result->getResponse());
         $this->assertSame('MockHello', $result->getName());
     }
 
@@ -62,11 +60,10 @@ class ControllerFactoryTest extends TestCase
         $request = (new ServerRequest([]))
             ->withUri($uri)
             ->withParam('controller', 'MockGoodBy');
-        $response = new Response();
 
         $this->expectException(MissingControllerException::class);
 
-        $this->controllerFactory->create($request, $response);
+        $this->controllerFactory->create($request);
     }
 
     public function test_create_throws_exception_when_resolved_controller_is_abstract()
@@ -75,24 +72,10 @@ class ControllerFactoryTest extends TestCase
         $request = (new ServerRequest([]))
             ->withUri($uri)
             ->withParam('controller', 'MockAbstract');
-        $response = new Response();
 
         $this->expectException(MissingControllerException::class);
 
-        $this->controllerFactory->create($request, $response);
-    }
-
-    public function test_create_throws_exception_when_resolved_controller_is_interface()
-    {
-        $uri = ServerRequestFactory::createUri(['PATH_INFO' => '/interface/taro',]);
-        $request = (new ServerRequest([]))
-            ->withUri($uri)
-            ->withParam('controller', 'MockInterface');
-        $response = new Response();
-
-        $this->expectException(MissingControllerException::class);
-
-        $this->controllerFactory->create($request, $response);
+        $this->controllerFactory->create($request);
     }
 
     public function test_create_throws_exception_when_cannot_resolve_controller_object()
@@ -104,11 +87,10 @@ class ControllerFactoryTest extends TestCase
         $request = (new ServerRequest([]))
             ->withUri($uri)
             ->withParam('controller', 'MockHello');
-        $response = new Response();
 
         $this->expectException(NotFoundExceptionInterface::class);
 
-        $controllerFactory->create($request, $response);
+        $controllerFactory->create($request);
     }
 }
 

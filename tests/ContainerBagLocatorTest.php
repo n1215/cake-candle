@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 class ContainerBagLocatorTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         ContainerBagLocator::flush();
@@ -35,7 +37,7 @@ class ContainerBagLocatorTest extends TestCase
 
     public function test_get_throws_exception_when_called_before_init()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('ContainerBagLocator has not been initialized.');
 
         ContainerBagLocator::get();
@@ -46,7 +48,7 @@ class ContainerBagLocatorTest extends TestCase
         $container = new MockContainer([]);
         ContainerBagLocator::init($container);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('ContainerBagLocator has already been initialized.');
 
         ContainerBagLocator::init($container);

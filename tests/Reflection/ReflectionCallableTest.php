@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle\Reflection;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 class ReflectionCallableTest extends TestCase
 {
@@ -52,7 +54,7 @@ class ReflectionCallableTest extends TestCase
 
     public function test_constructor_throws_exception_when_reflection_failed()
     {
-        $this->expectException(\ReflectionException::class);
+        $this->expectException(ReflectionException::class);
         new ReflectionCallable([HelloExtended::class, 'parent::staticMethod']);
     }
 }

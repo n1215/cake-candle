@@ -1,5 +1,5 @@
 # CakeCandle
-A PSR-11 compatible dependency injection plugin for CakePHP3.
+A PSR-11 compatible dependency injection plugin for CakePHP4.
 
 [![Latest Stable Version](https://poser.pugx.org/n1215/cake-candle/v/stable)](https://packagist.org/packages/n1215/cake-candle)
 [![License](https://poser.pugx.org/n1215/cake-candle/license)](https://packagist.org/packages/n1215/cake-candle)
@@ -8,12 +8,12 @@ A PSR-11 compatible dependency injection plugin for CakePHP3.
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/n1215/cake-candle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/n1215/cake-candle/?branch=master)
 
 # Requirements
-- CakePHP >= 3.6
+- CakePHP >= 4.0
 
 # Install
 
 ```
-# Create your CakePHP3 project.
+# Create your CakePHP4 project.
 composer create-project --prefer-dist cakephp/app your_app
 
 cd your_app
@@ -34,6 +34,7 @@ composer require php-di/php-di
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App;
 
@@ -42,15 +43,12 @@ use Cake\Http\BaseApplication;
 // ...
 use DI\ContainerBuilder;
 use N1215\CakeCandle\ContainerBagLocator;
-use N1215\CakeCandle\Http\ContainerAwareApplication;
+use N1215\CakeCandle\Controller\ControllerFactory;
 // ...
 
 class Application extends BaseApplication
 {
-    // 1. use ContainerAwareApplication trait.
-    use ContainerAwareApplication;
-
-    // 2. configure a PSR-11 compatible container as you like.
+    // 1. configure a PSR-11 compatible container as you like.
     private function configureContainer()
     {
         $builder = new ContainerBuilder();
@@ -59,12 +57,13 @@ class Application extends BaseApplication
         return $builder->build();
     }
 
-    // 3. initialize ContainerBagLocator with the configured container in Application::bootstrap().
-    public function bootstrap()
+    // 2. initialize ContainerBagLocator and ControllerFactory with the configured container in Application::bootstrap().
+    public function bootstrap(): void
     {
         try {
             $container = $this->configureContainer();
             ContainerBagLocator::init($container);
+            $this->controllerFactory = new ControllerFactory(ContainerBagLocator::get());
         } catch (\Exception $e) {
             throw new \RuntimeException('Failed to configure the di container.', 0, $e);
         }
@@ -96,12 +95,13 @@ class Application extends BaseApplication
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App;
 
 class GreetingService
 {
-    public function hello(string $name)
+    public function hello(string $name): string
     {
         return "Hello, {$name}";
     }
@@ -116,17 +116,16 @@ This trait can fill type declared parameters when action methods are invoked.
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\GreetingService;
-use N1215\CakeCandle\Http\AssistedAction;
+use Cake\Http\Response;
 
 class HelloController extends AppController
 {
-    use AssistedAction;
-
-    public function index(string $name, GreetingService $greetingService)
+    public function index(string $name, GreetingService $greetingService): Response
     {
         $suffix = $this->request->getQuery('suffix', 'san');
         $this->response
@@ -149,6 +148,7 @@ Type declared parameters are filled using your container.
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -171,7 +171,7 @@ class HelloCommand extends Command
         $this->greetingService = $greetingService;
     }
 
-    protected function buildOptionParser(ConsoleOptionParser $parser)
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser->addArgument('name', [
             'help' => 'name'
@@ -179,7 +179,7 @@ class HelloCommand extends Command
         return $parser;
     }
 
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $name = $args->getArgument('name');
         $io->out($this->greetingService->hello($name));
@@ -210,6 +210,7 @@ Add @Inject and @param Type declaration comments for your controller or command 
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -220,11 +221,11 @@ class HelloController extends AppController
 {
     /**
      * @Inject
-     * @param GreetingService
+     * @var GreetingService
      */
     private $greetingService;
 
-    public function index(string $name)
+    public function index(string $name): Response
     {
         $suffix = $this->request->getQuery('suffix', 'san');
         $this->response
@@ -237,6 +238,7 @@ class HelloController extends AppController
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -254,7 +256,19 @@ class HelloCommand extends Command
      */
     private $greetingService;
 
-    //
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser->addArgument('name', [
+            'help' => 'name'
+        ]);
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): void
+    {
+        $name = $args->getArgument('name');
+        $io->out($this->greetingService->hello($name));
+    }
 }
 ```
 

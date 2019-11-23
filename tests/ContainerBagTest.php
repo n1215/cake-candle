@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace N1215\CakeCandle;
 
 use N1215\CakeCandle\Invoker\InvokerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -23,7 +25,7 @@ class ContainerBagTest extends TestCase
      */
     private $containerBag;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->container = $this->createMock(ContainerInterface::class);

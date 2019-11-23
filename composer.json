@@ -10,13 +10,13 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
-        "cakephp/cakephp": "^3.6",
+        "php": ">=7.2",
+        "cakephp/cakephp": "4.x-dev",
         "psr/container": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -40,5 +40,10 @@
             "mkdir ./build",
             "php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage --coverage-clover=build/coverage.clover"
         ]
-    }
+    },
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
 }
